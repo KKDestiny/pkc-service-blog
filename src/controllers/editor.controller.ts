@@ -6,7 +6,7 @@
 import { NextFunction, Request, Response } from "express";
 import articleRepo from "../repositories/articles.repository";
 
-const simpleFields = ["title", "date", "status", "version", "categorieid", "editor", "tag", "private_categorieid", "abstract"];
+const simpleFields = ["title", "date", "status", "version", "categorieid", "editor", "tag", "private_categorieid", "abstract", "releasedversion"];
 
 async function listArticles(req: Request, res: Response, next: NextFunction) {
   try {
@@ -14,7 +14,7 @@ async function listArticles(req: Request, res: Response, next: NextFunction) {
 
     const select = simplify === "yes" ? simpleFields : undefined;
     const limit = _limit ? parseInt(String(_limit), 10) : undefined;
-    const criteria = {};
+    const criteria = { status: { $ne: "deleted" } };
     if (privateCategorieid) {
       Object.assign(criteria, { private_categorieid: privateCategorieid });
     }
