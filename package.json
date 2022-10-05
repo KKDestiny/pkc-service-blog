@@ -1,7 +1,7 @@
 {
-  "name": "typescript-express-swagger-setup",
-  "version": "1.1.0",
-  "description": "node.js project setup with typescript, express.js, swagger and tools",
+  "name": "pkc-service-blog",
+  "version": "0.0.0",
+  "description": "personal blog backend service",
   "author": "linxiaozhou.com",
   "main": "./src/server.ts",
   "license": "MIT",
@@ -57,6 +57,7 @@
     "@babel/preset-typescript": "^7.10.1",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@types/axios": "^0.14.0",
     "@types/chalk": "^2.2.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.12",

@@ -16,15 +16,15 @@ export default function createRequest(headers = {}, options = {}) {
   request.interceptors.response.use(
     (res: any): any => {
       if (res.status >= 200 && res.status < 300) {
-        if (!res.data?.data) {
+        if (!res.data.data) {
           return Promise.resolve({ data: res.data });
         }
-        return Promise.resolve({ data: res.data?.data });
+        return Promise.resolve({ data: res.data.data });
       }
       return Promise.resolve({
         errors: {
           status: res.status,
-          message: res.errors?.message,
+          message: res.errors.message,
         },
       });
     },
@@ -38,7 +38,7 @@ export default function createRequest(headers = {}, options = {}) {
           },
         });
       }
-      const message = res.data?.errors?.message || res.statusText;
+      const message = res.data.errors.message || res.statusText;
       return Promise.resolve({
         errors: {
           status: res.status,

@@ -5,11 +5,15 @@
  */
 import express from "express";
 
-import authRoute from "./auth.route";
-import demoMiddleware from "../middlewares/demo.middleware";
+import squareRoute from "./square.route";
+import editorRoute from "./editor.route";
+import auth from "../middlewares/auth.middleware";
 
 const router = express.Router({ mergeParams: true });
 
-router.use("/auth", demoMiddleware, authRoute);
+router.use("/square", squareRoute);
+
+router.use(auth);
+router.use("/editor", editorRoute);
 
 export default router;

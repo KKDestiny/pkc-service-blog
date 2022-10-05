@@ -19,6 +19,7 @@ const schema = Joi.object({
   APP_ROUTE: Joi.string().default("/"),
   APP_VERSION: Joi.string().default(`v${pkginfo.version || "1.0.0"}`),
 
+  APP_MONGO_DEBUG_MODE: Joi.boolean().default(false),
   APP_MONGO_HOST: Joi.string().default("127.0.0.1"),
   APP_MONGO_NAME: Joi.string().default("demo"),
   APP_MONGO_PORT: Joi.number().default(27017),
@@ -34,7 +35,6 @@ const schema = Joi.object({
 
   ENABLE_LOGDB: Joi.boolean().default(false),
 
-  APP_MONGO_DEBUG_MODE: Joi.boolean().default(false),
   LOG_MONGO_HOST: Joi.string().default("127.0.0.1"),
   LOG_MONGO_NAME: Joi.string().default("loggers"),
   LOG_MONGO_PORT: Joi.number().default(27017),

@@ -11,8 +11,8 @@ import app from "./app";
 createDatabase();
 
 app.listen(config.APP_PORT, () => {
-  console.log(chalk.green(`[Visit] http://localhost:${config.APP_PORT}`));
-  console.log(chalk.green(`[Documentation] http://localhost:${config.APP_PORT}/doc`));
+  console.log(chalk.green(`[Visit] http://localhost:${config.APP_PORT}${config.APP_ROUTE}`));
+  console.log(chalk.green(`[Documentation] http://localhost:${config.APP_PORT}${config.APP_ROUTE}/doc`));
 });
 
 export default app;
