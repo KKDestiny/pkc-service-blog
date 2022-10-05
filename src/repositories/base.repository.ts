@@ -32,10 +32,11 @@ export class BaseRepository<T> {
   }
 
   async list(options?: repoOptions): Promise<[T]> {
-    const criteria = options?.criteria || {};
-    const page = options?.page || 0;
-    const limit = options?.limit || 1000000;
-    const select = options?.select || "";
+    if (!options) options = {};
+    const criteria = options.criteria || {};
+    const page = options.page || 0;
+    const limit = options.limit || 1000000;
+    const select = options.select || "";
     const condition = omitBy(criteria, isUndefined);
 
     return await this.model
