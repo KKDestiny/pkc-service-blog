@@ -17,11 +17,26 @@ export default {
         consumes,
         parameters: [
           {
-            name: "collection",
+            name: "simplify",
+            in: "query",
+            type: "string",
+            example: "yes",
+            enum: ["yes", "", "no"],
+            description: "获取简化的信息",
+          },
+          {
+            name: "privateCategorieid",
             in: "query",
             type: "string",
             example: "cid1",
             description: "私人文集id",
+          },
+          {
+            name: "limit",
+            in: "query",
+            type: "string",
+            example: "100",
+            description: "最大数量",
           },
         ],
         responses: {

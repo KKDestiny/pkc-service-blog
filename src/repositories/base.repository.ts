@@ -1,25 +1,19 @@
-/*
- * @Date: 2020-06-09 15:24:12
- * @LastEditors: linxiaozhou.com
- * @Description: Description
- */
 import { omitBy, isUndefined } from "lodash";
-import accountModel from "../models/account.model";
 
-import { IAccount } from "../interfaces/account.interface";
 import { repoOptions } from "../interfaces/comm.interface";
-class AccountRepository {
+
+export class BaseRepository<T> {
   private model;
 
   constructor(model) {
     this.model = model;
   }
 
-  async create(data: IAccount): Promise<IAccount> {
+  async create(data: T): Promise<T> {
     return await this.model.create(data);
   }
 
-  async updateById(_id: string, data: any): Promise<IAccount> {
+  async updateById(_id: string, data: any): Promise<T> {
     return await this.model
       .findByIdAndUpdate({ _id }, data, {
         new: true,
@@ -29,7 +23,7 @@ class AccountRepository {
       .exec();
   }
 
-  async read(criteria): Promise<IAccount> {
+  async read(criteria): Promise<T> {
     return await this.model.findOne(criteria);
   }
 
@@ -37,11 +31,11 @@ class AccountRepository {
     return await this.model.findOneAndDelete(data);
   }
 
-  async list(options: repoOptions): Promise<[IAccount]> {
-    const criteria = options.criteria || {};
-    const page = options.page || 0;
-    const limit = options.limit || 100;
-    const select = options.select || "";
+  async list(options?: repoOptions): Promise<[T]> {
+    const criteria = options?.criteria || {};
+    const page = options?.page || 0;
+    const limit = options?.limit || 1000000;
+    const select = options?.select || "";
     const condition = omitBy(criteria, isUndefined);
 
     return await this.model
@@ -54,12 +48,10 @@ class AccountRepository {
       .exec();
   }
 
-  load(options: repoOptions): Promise<IAccount> {
+  load(options: repoOptions): Promise<T> {
     const criteria = options.criteria || {};
     const result = omitBy(criteria, isUndefined);
     const select = options.select || "";
     return this.model.findOne(result).select(select).lean().exec();
   }
 }
-
-export default new AccountRepository(accountModel);

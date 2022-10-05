@@ -19,5 +19,5 @@ export interface repoOptions {
   /**
    * 筛选查询结果
    */
-  select?: string;
+  select?: string | Array<string>;
 }

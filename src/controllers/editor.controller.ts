@@ -4,11 +4,24 @@
  * @Description: Description
  */
 import { NextFunction, Request, Response } from "express";
+import articleRepo from "../repositories/articles.repository";
+
+const simpleFields = ["title", "date", "status", "version", "categorieid", "editor", "tag", "private_categorieid", "abstract"];
 
 async function listArticles(req: Request, res: Response, next: NextFunction) {
   try {
+    const { simplify = "yes", privateCategorieid, limit: _limit } = req.query;
+
+    const select = simplify === "yes" ? simpleFields : undefined;
+    const limit = _limit ? parseInt(String(_limit), 10) : undefined;
+    const criteria = {};
+    if (privateCategorieid) {
+      Object.assign(criteria, { private_categorieid: privateCategorieid });
+    }
+
+    const list = await articleRepo.list({ select, limit, criteria });
     return res.status(200).json({
-      data: [],
+      data: list,
     });
   } catch (error) {
     return next(error);
