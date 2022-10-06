@@ -4,9 +4,11 @@
  * @Description: Description
  */
 import { NextFunction, Request, Response } from "express";
-import articleRepo from "../repositories/articles.repository";
 
-const simpleFields = ["title", "date", "status", "version", "categorieid", "editor", "tag", "private_categorieid", "abstract", "releasedversion"];
+import articleRepo from "../repositories/articles.repository";
+import { simpleFieldsArticle } from "./commons";
+
+const simpleFields = simpleFieldsArticle;
 
 async function listArticles(req: Request, res: Response, next: NextFunction) {
   try {
