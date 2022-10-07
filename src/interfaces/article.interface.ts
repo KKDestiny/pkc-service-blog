@@ -76,53 +76,54 @@ export type AttachmentType = {
 };
 
 export type ArticleType = {
-  title: string;
-  abstract: string;
-  author: string;
-  login: string;
-  author_url: string;
-  editor: string;
-  status: string;
-  ispublished: string;
-  categorieid: string;
-  publishto: string;
-  publishtologs: Array<PublishLogType>;
-  original: string;
-  tag: string;
-  settop: string;
+  date?: string;
+  title?: string;
+  abstract?: string;
+  author?: string;
+  login?: string;
+  author_url?: string;
+  editor?: string;
+  status?: string;
+  ispublished?: string;
+  categorieid?: string;
+  publishto?: string;
+  publishtologs?: Array<PublishLogType>;
+  original?: string;
+  tag?: string;
+  settop?: string;
 
-  links: Array<string>;
-  like: Array<string>;
-  reader: Array<string>;
+  links?: Array<string>;
+  like?: Array<string>;
+  reader?: Array<string>;
 
-  likenum: number;
-  readnum: number;
+  likenum?: number;
+  readnum?: number;
 
-  isTemplate: boolean;
+  isTemplate?: boolean;
 
-  url: string;
-  img_url: string;
-  version: string;
+  url?: string;
+  img_url?: string;
+  version?: string;
 
-  releasedversion: string;
-  releasedversionName: string;
-  release_log: Array<ReleaseLogType>;
+  releasedversion?: string;
+  releasedversionName?: string;
+  release_log?: Array<ReleaseLogType>;
 
-  firstauthor: string;
+  firstauthor?: string;
 
-  takeover: Array<TakeoverType>;
+  takeover?: Array<TakeoverType>;
 
-  date_release: Date;
-  date_delete: Date;
-  date_publish: Date;
+  date_release?: Date;
+  date_delete?: Date;
+  date_publish?: Date;
 
-  comment: Array<CommentType>;
-  history: Array<HistoryType>;
-  attachment: Array<AttachmentType>;
+  comment?: Array<CommentType>;
+  history?: Array<HistoryType>;
+  attachment?: Array<AttachmentType>;
 
-  private_categorieid: string;
-  isencrypted: boolean;
-  passwd: string;
-  allow_reader: Array<MongoId>;
-  allow_group: Array<MongoId>;
+  private_categorieid?: string;
+  isencrypted?: boolean;
+  passwd?: string;
+  allow_reader?: Array<MongoId>;
+  allow_group?: Array<MongoId>;
 };

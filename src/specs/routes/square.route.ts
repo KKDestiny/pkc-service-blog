@@ -88,6 +88,27 @@ export default {
               properties: {
                 data: {
                   type: "object",
+                  properties: {
+                    page: {
+                      type: "number",
+                      example: 400,
+                      description: "页码",
+                    },
+                    limit: {
+                      type: "number",
+                      example: 400,
+                      description: "每页文档数量",
+                    },
+                    total: {
+                      type: "number",
+                      example: 400,
+                      description: "文档总数",
+                    },
+                    list: {
+                      type: "object",
+                      description: "文章列表",
+                    },
+                  },
                 },
               },
             },

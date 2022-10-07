@@ -95,3 +95,4 @@ docs/website/swagger.json
 __tests__/reports
 src/specs/tools/exports
 .env
+private/

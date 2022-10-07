@@ -35,8 +35,15 @@ export default {
             name: "limit",
             in: "query",
             type: "string",
-            example: "100",
-            description: "最大数量",
+            example: "200",
+            description: "最大查看数量",
+          },
+          {
+            name: "page",
+            in: "query",
+            type: "string",
+            example: "0",
+            description: "页码",
           },
         ],
         responses: {
@@ -47,6 +54,27 @@ export default {
               properties: {
                 data: {
                   type: "object",
+                  properties: {
+                    page: {
+                      type: "number",
+                      example: 400,
+                      description: "页码",
+                    },
+                    limit: {
+                      type: "number",
+                      example: 400,
+                      description: "每页文档数量",
+                    },
+                    total: {
+                      type: "number",
+                      example: 400,
+                      description: "文档总数",
+                    },
+                    list: {
+                      type: "object",
+                      description: "文章列表",
+                    },
+                  },
                 },
               },
             },
