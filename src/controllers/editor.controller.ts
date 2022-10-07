@@ -31,7 +31,7 @@ async function listArticles(req: IRequest, res: Response, next: NextFunction) {
       Object.assign(criteria, { private_categorieid: privateCategorieid });
     }
 
-    const result = await Promise.allSettled([articleRepo.list({ limit, page, criteria, select: simpleFields }), articleRepo.count(criteria)]);
+    const result = await Promise.allSettled([articleRepo.list({ limit, page, criteria, select }), articleRepo.count(criteria)]);
     const articles = result[0].status === "fulfilled" ? result[0].value : [];
     const total = result[1].status === "fulfilled" ? result[1].value : 0;
     return res.status(200).json({
