@@ -23,6 +23,10 @@ export class BaseRepository<T> {
       .exec();
   }
 
+  async count(criteria): Promise<T> {
+    return await this.model.count(criteria);
+  }
+
   async read(criteria): Promise<T> {
     return await this.model.findOne(criteria);
   }

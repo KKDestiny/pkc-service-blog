@@ -10,6 +10,7 @@ const router = express.Router({ mergeParams: true });
 
 router.get("/", controller.index);
 
+router.get("/articles", controller.getArticleList);
 router.get("/articles/:articleId", controller.getArticleInfo);
 router.get("/articles/:articleId/content", controller.getArticleContent);
 

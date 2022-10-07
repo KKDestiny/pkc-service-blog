@@ -50,6 +50,71 @@ export default {
         },
       },
     },
+    "/square/articles": {
+      get: {
+        tags,
+        summary: "获取已发布文章列表",
+        produces,
+        consumes,
+        parameters: [
+          {
+            name: "ispublished",
+            in: "query",
+            type: "string",
+            example: "yes",
+            enum: ["yes", "no", ""],
+            description: "只看被专栏收录的文章，默认为yes",
+          },
+          {
+            name: "limit",
+            in: "query",
+            type: "string",
+            example: "200",
+            description: "最大查看数量（最大值为2000）",
+          },
+          {
+            name: "page",
+            in: "query",
+            type: "string",
+            example: "0",
+            description: "页码",
+          },
+        ],
+        responses: {
+          200: {
+            description: "获取成功",
+            schema: {
+              type: "object",
+              properties: {
+                data: {
+                  type: "object",
+                },
+              },
+            },
+          },
+          400: {
+            description: "获取失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     "/square/articles/{articleId}": {
       get: {
         tags,

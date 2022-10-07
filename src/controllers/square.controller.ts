@@ -35,12 +35,39 @@ async function index(req: Request, res: Response, next: NextFunction) {
 }
 
 /**
+ * 获取文章列表
+ */
+async function getArticleList(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { ispublished = "yes", limit: _limit, page: _page } = req.params;
+    let limit = 100;
+    if (_limit && !isNaN(Number(_limit))) {
+      if (Number(_limit) < 2000) limit = Number(_limit);
+    }
+    let page = 0;
+    if (_limit && !isNaN(Number(page))) {
+      page = Number(_page);
+    }
+
+    const criteria = { status: "released", ispublished };
+    const result = await Promise.allSettled([articleRepo.list({ limit, page, criteria, select: simpleFields }), articleRepo.count(criteria)]);
+    const articles = result[0].status === "fulfilled" ? result[0].value : [];
+    const total = result[1].status === "fulfilled" ? result[1].value : 0;
+    return res.status(200).json({
+      data: { page, limit, total, list: articles },
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * 获取文章数据
  */
 async function getArticleInfo(req: Request, res: Response, next: NextFunction) {
   try {
     const { articleId } = req.params;
-    const article = await articleRepo.load({ criteria: { _id: articleId, status: "released" } });
+    const article = await articleRepo.load({ criteria: { _id: articleId, status: "released" }, select: simpleFields });
     return res.status(200).json({
       data: article,
     });
@@ -56,7 +83,7 @@ async function getArticleContent(req: Request, res: Response, next: NextFunction
   try {
     // 文章
     const { articleId } = req.params;
-    const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, status: "released" } });
+    const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, status: "released" }, select: simpleFields });
     const { isencrypted } = article;
     if (isencrypted) {
       // 加密文章不允许直接查看
@@ -99,6 +126,7 @@ async function listArticlesInACategory(req: Request, res: Response, next: NextFu
 export default {
   index,
 
+  getArticleList,
   getArticleInfo,
   getArticleContent,
 
