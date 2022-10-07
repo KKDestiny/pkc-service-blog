@@ -169,7 +169,7 @@ async function recoverAnArticle(req: IRequest, res: Response, next: NextFunction
       status: "saved",
     };
     if (req.body.privateCategorieid) {
-      updates.private_categorieid = req.body.privateCategorieid;
+      Object.assign(updates, { private_categorieid: req.body.privateCategorieid });
     }
     const result = await articleRepo.findByIdAndUpdate(criteria, updates);
     return res.status(200).json({
