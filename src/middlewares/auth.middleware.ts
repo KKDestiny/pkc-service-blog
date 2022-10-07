@@ -11,7 +11,7 @@ export default async function (req, res, next) {
     const reqClient = createAccountsRequest(req.headers.authorization);
     const result: { data: any; errors: any } = await reqClient.get("/mine/profile");
     if (result.data) {
-      res.user = result.data;
+      req.user = result.data;
       return next();
     }
 
