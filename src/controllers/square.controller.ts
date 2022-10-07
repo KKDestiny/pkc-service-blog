@@ -12,6 +12,9 @@ import { simpleFieldsArticle } from "./commons";
 
 const simpleFields = simpleFieldsArticle;
 
+/**
+ * 广场
+ */
 async function index(req: Request, res: Response, next: NextFunction) {
   try {
     // 文章
@@ -27,6 +30,23 @@ async function index(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * 获取某个专栏的文章列表
+ */
+async function listArticlesInACategory(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { categoryId } = req.params;
+    const articles = await articleRepo.list({ criteria: { categorieid: categoryId, status: "released", ispublished: "yes" }, select: simpleFields });
+
+    return res.status(200).json({
+      data: articles,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export default {
   index,
+  listArticlesInACategory,
 };
