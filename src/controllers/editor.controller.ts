@@ -149,6 +149,38 @@ async function deleteAnArticle(req: IRequest, res: Response, next: NextFunction)
 }
 
 /**
+ * 恢复一篇文章
+ */
+async function recoverAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+
+    const updates = {
+      status: "saved",
+    };
+    if (req.body.privateCategorieid) {
+      updates.private_categorieid = req.body.privateCategorieid;
+    }
+    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * 更新文章的基础信息
  */
 async function updateAnArticle(req: IRequest, res: Response, next: NextFunction) {
@@ -324,6 +356,7 @@ async function cancelReleaseAnArticle(req: IRequest, res: Response, next: NextFu
 export default {
   listArticles,
   create,
+  recoverAnArticle,
   deleteAnArticle,
   updateAnArticle,
   updateAnArticleContent,

@@ -299,6 +299,50 @@ export default {
           },
         },
       },
+      post: {
+        tags,
+        summary: "从回收站中恢复一篇文章",
+        produces,
+        consumes,
+        parameters: [
+          {
+            name: "privateCategorieid",
+            in: "body",
+            type: "string",
+            example: "pcid0001",
+            default: "default",
+            description: "恢复后要把文章放在哪个文集中，默认不改变文章所在文集",
+          },
+        ],
+        responses: {
+          200: {
+            description: "成功",
+            schema: {
+              type: "object",
+            },
+          },
+          400: {
+            description: "失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     },
     "/editor/articles/{articleId}/content": {
       put: {

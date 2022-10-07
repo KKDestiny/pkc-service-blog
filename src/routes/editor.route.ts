@@ -12,6 +12,7 @@ router.get("/articles", controller.listArticles);
 router.post("/articles", controller.create);
 router.put("/articles/:articleId", controller.updateAnArticle);
 router.delete("/articles/:articleId", controller.deleteAnArticle);
+router.post("/articles/:articleId", controller.recoverAnArticle);
 
 router.put("/articles/:articleId/content", controller.updateAnArticleContent);
 router.put("/articles/:articleId/release", controller.releaseAnArticle);
