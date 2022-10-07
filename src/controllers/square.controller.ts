@@ -83,7 +83,7 @@ async function getArticleContent(req: Request, res: Response, next: NextFunction
   try {
     // 文章
     const { articleId } = req.params;
-    const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, status: "released" }, select: simpleFields });
+    const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, status: "released" } });
     const { isencrypted } = article;
     if (isencrypted) {
       // 加密文章不允许直接查看
@@ -96,7 +96,7 @@ async function getArticleContent(req: Request, res: Response, next: NextFunction
     const ext = config.APP_ARTICLE_EXT;
     const fullPath = `${rootPath}/${articleFile}_v${version}${ext}`;
     if (!fs.existsSync(fullPath)) {
-      return res.status(400).json({ errors: { message: "content lost", fullPath } });
+      return res.status(400).json({ errors: { message: "content lost" } });
     }
     const content = fs.readFileSync(fullPath, "utf8");
     return res.status(200).json({
