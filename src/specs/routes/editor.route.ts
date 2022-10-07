@@ -336,5 +336,59 @@ export default {
         },
       },
     },
+    "/editor/articles/{articleId}/release": {
+      put: {
+        tags,
+        summary: "发布文章",
+        produces,
+        consumes,
+        parameters: [
+          {
+            name: "releasedversionName",
+            in: "body",
+            type: "string",
+            example: "v1.0",
+            required: true,
+            description: "自定义的发布版本号",
+          },
+          {
+            name: "releaseInfo",
+            in: "body",
+            type: "string",
+            example: "发布正式版本",
+            required: true,
+            description: "发布说明",
+          },
+        ],
+        responses: {
+          200: {
+            description: "成功",
+            schema: {
+              type: "object",
+            },
+          },
+          400: {
+            description: "失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 };

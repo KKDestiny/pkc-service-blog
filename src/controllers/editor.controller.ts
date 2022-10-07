@@ -188,9 +188,66 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
   }
 }
 
+/**
+ * 发布文章
+ */
+async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const { releasedversionName, releaseInfo } = req.body;
+    const criteria = { _id: articleId, login: name };
+
+    if (!releasedversionName || typeof releasedversionName !== "string") {
+      return res.status(400).json({ errors: { message: "releasedversionName is required as string" } });
+    }
+    if (!releaseInfo || typeof releaseInfo !== "string") {
+      return res.status(400).json({ errors: { message: "releaseInfo is required as string" } });
+    }
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+    if (article.status === "released") {
+      return res.status(400).json({
+        errors: { message: "文章已发布，不可重复操作" },
+      });
+    }
+
+    const datetime = getDatetime();
+    const updates = {
+      date_release: datetime,
+      status: "released",
+      releasedversion: article.version, // 发布时文章的版本号
+      releasedversionName: releasedversionName, // 自定义的发布版本号
+    };
+
+    const releaseLog = {
+      id: generateSerial(),
+      date: datetime,
+      version: article.version,
+      releasedversion: releasedversionName, // 自定义的发布版本号
+      content: releaseInfo,
+      author: name,
+    };
+
+    const result = await articleRepo.findByIdAndUpdate(criteria, { $set: updates, $addToSet: { release_log: releaseLog } });
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export default {
   listArticles,
   create,
   updateAnArticle,
   updateAnArticleContent,
+  releaseAnArticle,
 };
