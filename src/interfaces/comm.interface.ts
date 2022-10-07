@@ -3,6 +3,8 @@
  * @LastEditors: linxiaozhou.com
  * @Description: file content
  */
+import { Request } from "express";
+
 export interface repoOptions {
   /**
    * 筛选查询条件
@@ -21,3 +23,5 @@ export interface repoOptions {
    */
   select?: string | Array<string>;
 }
+
+export type IRequest = Request & { user: any };

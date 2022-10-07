@@ -5,5 +5,8 @@
  */
 import { BaseRepository } from "./base.repository";
 import ArticleModel from "../models/articles.model";
+import { ArticleType } from "../interfaces/article.interface";
 
-export default new BaseRepository(ArticleModel);
+class ArticleRepository extends BaseRepository<ArticleType> {}
+
+export default new ArticleRepository(ArticleModel);

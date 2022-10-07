@@ -9,6 +9,10 @@ import controller from "../controllers/square.controller";
 const router = express.Router({ mergeParams: true });
 
 router.get("/", controller.index);
+
+router.get("/articles/:articleId", controller.getArticleInfo);
+router.get("/articles/:articleId/content", controller.getArticleContent);
+
 router.get("/categories/:categoryId/articles", controller.listArticlesInACategory);
 
 export default router;

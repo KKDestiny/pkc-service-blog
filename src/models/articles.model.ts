@@ -19,6 +19,10 @@ export const schema = new Schema(
       type: String,
       description: "文章作者",
     },
+    login: {
+      type: String,
+      description: "文章作者(统一账户)",
+    },
     author_url: {
       type: String,
       description: "作者头像url",
