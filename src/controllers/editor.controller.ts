@@ -14,7 +14,7 @@ import { ArticleType } from "../interfaces/article.interface";
 
 import articleRepo from "../repositories/articles.repository";
 import { simpleFieldsArticle } from "./commons";
-import { generateSerial, getDeviceAgent, getDatetime } from "../utils/string.util";
+import { generateSerial, getDeviceAgent, getDatetime, generateSimplePasswd } from "../utils/string.util";
 
 const simpleFields = simpleFieldsArticle;
 
@@ -353,6 +353,99 @@ async function cancelReleaseAnArticle(req: IRequest, res: Response, next: NextFu
   }
 }
 
+/**
+ * 为文章加锁
+ */
+async function lockAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+
+    const userPassword = req.body.passwd;
+    if (userPassword) {
+      if (typeof userPassword !== "string" || userPassword.length < 4) {
+        return res.status(400).json({
+          errors: { message: "密码类型错误或长度小于4位" },
+        });
+      }
+    }
+    const passwd = userPassword || generateSimplePasswd(8);
+    const updates = { isencrypted: true, passwd };
+
+    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * 取消文章锁
+ */
+async function unlockAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+
+    const updates = { isencrypted: false };
+    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * 重置文章锁
+ */
+async function resetLockAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+
+    const passwd = generateSimplePasswd(8);
+    const updates = { isencrypted: true, passwd };
+
+    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export default {
   listArticles,
   create,
@@ -360,6 +453,11 @@ export default {
   deleteAnArticle,
   updateAnArticle,
   updateAnArticleContent,
+
   releaseAnArticle,
   cancelReleaseAnArticle,
+
+  lockAnArticle,
+  resetLockAnArticle,
+  unlockAnArticle,
 };

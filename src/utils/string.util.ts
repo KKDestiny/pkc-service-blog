@@ -12,6 +12,20 @@ export function generateSerial() {
   return serialPrevfix + parseInt(`${10000 * Math.random()}`, 10);
 }
 
+export function generateSimplePasswd(length) {
+  const text = ["abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "1234567890"];
+  const rand = function (min, max) {
+    return Math.floor(Math.max(min, Math.random() * (max + 1)));
+  };
+  const len = length;
+  let pw = "";
+  for (let i = 0; i < len; ++i) {
+    var strpos = rand(0, 2);
+    pw += text[strpos].charAt(rand(0, text[strpos].length));
+  }
+  return pw;
+}
+
 export function padStr(num: number | string, n: number) {
   const numString = String(num);
   let temp = numString;

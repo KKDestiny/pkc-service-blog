@@ -521,5 +521,120 @@ export default {
         },
       },
     },
+    "/editor/articles/{articleId}/lock": {
+      post: {
+        tags,
+        summary: "为文章加锁",
+        produces,
+        consumes,
+        parameters: [
+          {
+            name: "passwd",
+            in: "body",
+            type: "string",
+            example: "abc123",
+            required: false,
+            description: "设置密码，如果不提供则使用随机字符串作为密码",
+          },
+        ],
+        responses: {
+          200: {
+            description: "成功",
+            schema: {
+              type: "object",
+            },
+          },
+          400: {
+            description: "失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      put: {
+        tags,
+        summary: "重置文章锁",
+        produces,
+        consumes,
+        responses: {
+          200: {
+            description: "成功",
+            schema: {
+              type: "object",
+            },
+          },
+          400: {
+            description: "失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        tags,
+        summary: "取消文章锁",
+        produces,
+        consumes,
+        parameters: [],
+        responses: {
+          200: {
+            description: "成功",
+            schema: {
+              type: "object",
+            },
+          },
+          400: {
+            description: "失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
 };
