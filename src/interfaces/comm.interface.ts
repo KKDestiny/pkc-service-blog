@@ -25,3 +25,5 @@ export interface repoOptions {
 }
 
 export type IRequest = Request & { user: any };
+
+export type MongoId = string;

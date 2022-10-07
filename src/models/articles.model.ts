@@ -224,11 +224,11 @@ export const schema = new Schema(
       description: "如果文章加密，则此字段为此文章的密码；否则此字段无效",
     },
     allow_reader: {
-      type: String,
+      type: [String],
       description: "允许阅读此文章的用户id列表",
     },
     allow_group: {
-      type: String,
+      type: [String],
       description: "允许阅读此文章的用户组id列表",
     },
   },
