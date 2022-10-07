@@ -96,7 +96,7 @@ async function getArticleContent(req: Request, res: Response, next: NextFunction
     const ext = config.APP_ARTICLE_EXT;
     const fullPath = `${rootPath}/${articleFile}_v${version}${ext}`;
     if (!fs.existsSync(fullPath)) {
-      return res.status(400).json({ errors: { message: "content lost" } });
+      return res.status(400).json({ errors: { message: "content lost", fullPath } });
     }
     const content = fs.readFileSync(fullPath, "utf8");
     return res.status(200).json({
