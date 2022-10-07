@@ -6,7 +6,6 @@
 import { NextFunction, Response } from "express";
 import fs from "fs-extra";
 import { pick } from "lodash";
-import dayjs from "dayjs";
 
 import config from "../config";
 
@@ -107,13 +106,56 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
 }
 
 /**
+ * 删除一篇文章
+ */
+async function deleteAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { forceDelete } = req.query;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+
+    if (forceDelete !== "yes") {
+      // 仅移入回收站、不物理删除
+      const updates = {
+        status: "deleted",
+        date_delete: getDatetime(),
+      };
+      const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+      return res.status(200).json({
+        data: pick(result, simpleFields),
+      });
+    }
+
+    // 物理删除
+    const rootPath = config.APP_ARTICLE_ROOT;
+    const dirname = article.url.replace(/\\/g, "/").split("/")[0];
+    const dirpath = `${rootPath}/${dirname}`;
+    const result = await Promise.allSettled([articleRepo.remove(criteria), fs.rmdir(dirpath, { recursive: true })]);
+    return res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * 更新文章的基础信息
  */
 async function updateAnArticle(req: IRequest, res: Response, next: NextFunction) {
   try {
     const { articleId } = req.params;
     const { name } = req.user;
-    const updates = pick(req.body, ["title", "tag", "editor", "privateCategorieid"]);
+    const updates = pick(req.body, ["title", "tag", "editor", "original", "privateCategorieid"]);
     updates.private_categorieid = req.body.privateCategorieid || "default";
 
     const result = await articleRepo.findByIdAndUpdate({ _id: articleId, login: name }, updates);
@@ -244,10 +286,47 @@ async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction
   }
 }
 
+/**
+ * 取消发布文章
+ */
+async function cancelReleaseAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+    if (article.status === "saved") {
+      return res.status(400).json({
+        errors: { message: "文章未发布，不可重复操作" },
+      });
+    }
+
+    const updates = {
+      status: "saved",
+    };
+
+    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export default {
   listArticles,
   create,
+  deleteAnArticle,
   updateAnArticle,
   updateAnArticleContent,
   releaseAnArticle,
+  cancelReleaseAnArticle,
 };

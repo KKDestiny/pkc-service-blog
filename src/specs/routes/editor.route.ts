@@ -210,12 +210,64 @@ export default {
             description: "编辑器类型",
           },
           {
+            name: "original",
+            in: "body",
+            type: "string",
+            example: "yes",
+            enum: ["yes", "no", null, "", "translate"],
+            description: "原创标识",
+          },
+          {
             name: "privateCategorieid",
             in: "body",
             type: "string",
             example: "pcid0001",
             default: "default",
             description: "文集id，文章将被放在该文集中",
+          },
+        ],
+        responses: {
+          200: {
+            description: "成功",
+            schema: {
+              type: "object",
+            },
+          },
+          400: {
+            description: "失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        tags,
+        summary: "删除一篇文章",
+        produces,
+        consumes,
+        parameters: [
+          {
+            name: "forceDelete",
+            in: "query",
+            type: "string",
+            example: "yes",
+            enum: ["no", "yes"],
+            description: "是否物理删除，默认只会移入回收站、文件内容不会物理删除（可恢复）",
           },
         ],
         responses: {
@@ -360,6 +412,41 @@ export default {
             description: "发布说明",
           },
         ],
+        responses: {
+          200: {
+            description: "成功",
+            schema: {
+              type: "object",
+            },
+          },
+          400: {
+            description: "失败",
+            schema: {
+              type: "object",
+              properties: {
+                errors: {
+                  type: "object",
+                  properties: {
+                    status: {
+                      type: "number",
+                      example: 400,
+                    },
+                    message: {
+                      type: "string",
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        tags,
+        summary: "取消发布文章",
+        produces,
+        consumes,
+        parameters: [],
         responses: {
           200: {
             description: "成功",
