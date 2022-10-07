@@ -3,8 +3,9 @@
  * @LastEditors: linxiaozhou.com
  * @Description: Description
  */
-import fs from "fs-extra";
 import { NextFunction, Response } from "express";
+import fs from "fs-extra";
+import { pick } from "lodash";
 import dayjs from "dayjs";
 
 import config from "../config";
@@ -14,7 +15,7 @@ import { ArticleType } from "../interfaces/article.interface";
 
 import articleRepo from "../repositories/articles.repository";
 import { simpleFieldsArticle } from "./commons";
-import { generateSerial } from "../utils/string.util";
+import { generateSerial, getDeviceAgent, getDatetime } from "../utils/string.util";
 
 const simpleFields = simpleFieldsArticle;
 
@@ -60,13 +61,15 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
     const { title = "无标题", tag, privateCategorieid = "default", editor = "markdown", content = "# 标题\r\n\r\n从这里开始..." } = req.body;
     const dirname = generateSerial();
     const headimg = "favicon.ico";
+    const { name } = req.user;
 
     const url = `${dirname}/${dirname}`;
     const article: ArticleType = {
-      date: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+      date: getDatetime(),
       title: title,
       author: req.user.name,
       author_url: headimg,
+      login: name,
       tag,
       status: "saved", // // 状态： released(发布) | saved(保存、未发布) | deleted(删除)
       abstract: "无",
@@ -103,7 +106,91 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
   }
 }
 
+/**
+ * 更新文章的基础信息
+ */
+async function updateAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const updates = pick(req.body, ["title", "tag", "editor", "privateCategorieid"]);
+    updates.private_categorieid = req.body.privateCategorieid || "default";
+
+    const result = await articleRepo.findByIdAndUpdate({ _id: articleId, login: name }, updates);
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * 更新文章的正文内容
+ */
+async function updateAnArticleContent(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article)
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+
+    // Checking
+    const { version, title, content, abstract, imgUrl, savetype } = req.body;
+    if (!version || typeof version !== "string") {
+      return res.status(400).json({ errors: { message: "version is required as string" } });
+    }
+    if (parseInt(article.version) >= parseInt(version)) {
+      return res.status(400).json({
+        errors: { message: "您在其他终端进行了编辑。请先备份好当前的文章，重新刷新页面！" },
+      });
+    }
+
+    // 更新文章内容
+    const rootPath = config.APP_ARTICLE_ROOT;
+    const ext = config.APP_ARTICLE_EXT;
+    const fullPath = `${rootPath}/${article.url}_v${version}${ext}`.replace(/\\/g, "/");
+    await fs.writeFile(fullPath, content, "utf8");
+
+    // history
+    const devicetype = getDeviceAgent(req);
+    const history = {
+      _id: generateSerial(),
+      date: getDatetime(),
+      version,
+      devicetype,
+      savetype,
+    };
+
+    // 文章信息
+    const updates = { version };
+    if (title !== article.title) {
+      Object.assign(updates, { title });
+    }
+    if (abstract !== article.abstract) {
+      Object.assign(updates, { abstract });
+    }
+    if (imgUrl !== article.img_url) {
+      Object.assign(updates, { img_url: imgUrl });
+    }
+    const result = await articleRepo.findByIdAndUpdate(criteria, { $set: updates, $addToSet: { history } });
+    return res.status(200).json({
+      data: pick(result, simpleFields),
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export default {
   listArticles,
   create,
+  updateAnArticle,
+  updateAnArticleContent,
 };

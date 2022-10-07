@@ -4,6 +4,7 @@
  * @Description: file content
  */
 import mongoose, { Schema } from "mongoose";
+import { saveTypes } from "../config/constants";
 
 export const schema = new Schema(
   {
@@ -45,6 +46,10 @@ export const schema = new Schema(
     categorieid: {
       type: String,
       description: "所属模块。默认为 default。具体id参照config/article.js里的定义",
+    },
+    private_categorieid: {
+      type: String,
+      description: "私人文集， 默认为 default",
     },
     publishto: {
       type: String,
@@ -194,7 +199,7 @@ export const schema = new Schema(
           devicetype: { type: String, description: "设备类型", enum: ["pc", "mobile"] },
 
           // autosave-自动保存, manualsave-手动保存, release-发布, update-发布更新
-          savetype: { type: String, description: "保存类型", enum: ["autosave", "manualsave", "release", "update"] },
+          savetype: { type: String, description: "保存类型", enum: saveTypes },
         },
       ],
     },
@@ -211,10 +216,6 @@ export const schema = new Schema(
       ],
     },
 
-    private_categorieid: {
-      type: String,
-      description: "私人文集， 默认为 default",
-    },
     isencrypted: {
       type: Boolean,
       description: "文章是否加密",

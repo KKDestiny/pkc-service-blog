@@ -10,5 +10,7 @@ const router = express.Router({ mergeParams: true });
 
 router.get("/articles", controller.listArticles);
 router.post("/articles", controller.create);
+router.put("/articles/:articleId", controller.updateAnArticle);
+router.put("/articles/:articleId/content", controller.updateAnArticleContent);
 
 export default router;

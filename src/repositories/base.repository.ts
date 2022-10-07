@@ -23,6 +23,16 @@ export class BaseRepository<T> {
       .exec();
   }
 
+  async findByIdAndUpdate(criteria, data: any): Promise<T> {
+    return await this.model
+      .findByIdAndUpdate(criteria, data, {
+        new: true,
+        runValidators: true,
+      })
+      .lean()
+      .exec();
+  }
+
   async count(criteria): Promise<T> {
     return await this.model.count(criteria);
   }

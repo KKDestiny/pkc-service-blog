@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export function generateSerial() {
   const dateObj = new Date();
   const serialPrevfix =
@@ -17,4 +19,18 @@ export function padStr(num: number | string, n: number) {
     temp = "0" + temp;
   }
   return temp;
+}
+
+export function getDeviceAgent(req) {
+  var deviceAgent = req.headers["user-agent"].toLowerCase();
+  var agentID = deviceAgent.match(/(iphone|ipod|ipad|android)/);
+  if (agentID) {
+    return "mobile"; // 手机、pad的网页
+  } else {
+    return "pc"; // 电脑端
+  }
+}
+
+export function getDatetime() {
+  return dayjs().format("YYYY-MM-DD HH:mm:ss");
 }
