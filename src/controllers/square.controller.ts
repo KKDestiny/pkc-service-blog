@@ -39,7 +39,7 @@ async function index(req: Request, res: Response, next: NextFunction) {
  */
 async function getArticleList(req: Request, res: Response, next: NextFunction) {
   try {
-    const { ispublished = "yes", limit: _limit, page: _page } = req.params;
+    const { ispublished = "yes", limit: _limit, page: _page } = req.query;
     let limit = 100;
     if (_limit && !isNaN(Number(_limit))) {
       if (Number(_limit) < 2000) limit = Number(_limit);
