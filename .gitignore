@@ -91,6 +91,7 @@ dist
 lib
 databases
 info
+dcos/
 docs/website/swagger.json
 __tests__/reports
 src/specs/tools/exports
