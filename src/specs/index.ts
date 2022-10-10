@@ -12,7 +12,7 @@ import config from "../config";
 
 const swaggerConfigs = {
   // 根目录
-  directories: ["./routes", "./models"],
+  directories: ["./routes", "./schemas"],
 
   // 标签
   tags: {

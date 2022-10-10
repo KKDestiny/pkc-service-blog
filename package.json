@@ -19,6 +19,7 @@
     "obfus": "npx javascript-obfuscator dist --output dist --exclude 'dist/seeders/*, dist/migrations/*' --config obfuscator.config.json",
     "swagger": "npx babel-node --extensions \".js,.ts\" scripts/gen-swagger.ts",
     "postman": "npx babel-node --extensions \".js,.ts\" scripts/gen-postman.ts",
+    "schemas": "npx babel-node --extensions \".js,.ts\" scripts/gen-schemas.ts",
     "test": "is-ci \"test:coverage\" \"test:watch\"",
     "test:coverage": "npx jest --coverage --detectOpenHandles --forceExit",
     "test:watch": "npx jest --watchAll --runInBand --detectOpenHandles",
