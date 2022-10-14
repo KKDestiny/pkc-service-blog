@@ -110,43 +110,42 @@ export default {
         consumes,
         parameters: [
           {
-            name: "content",
             in: "body",
-            type: "string",
-            example: "# 标题\r\n\r\n从这里开始...",
-            default: "# 标题\r\n\r\n从这里开始...",
-            description: "文章内容",
-          },
-          {
-            name: "title",
-            in: "body",
-            type: "string",
-            example: "新文章",
-            default: "无标题",
-            description: "文章标题",
-          },
-          {
-            name: "tag",
-            in: "body",
-            type: "string",
-            example: "标签1",
-            description: "标签",
-          },
-          {
-            name: "editor",
-            in: "body",
-            type: "string",
-            example: "markdown",
-            default: "markdown",
-            description: "编辑器类型",
-          },
-          {
-            name: "privateCategorieid",
-            in: "body",
-            type: "string",
-            example: "pcid0001",
-            default: "default",
-            description: "文集id，文章将被放在该文集中",
+            name: "body",
+            schema: {
+              type: "object",
+              properties: {
+                content: {
+                  type: "string",
+                  example: "# 标题\r\n\r\n从这里开始...",
+                  default: "# 标题\r\n\r\n从这里开始...",
+                  description: "文章内容",
+                },
+                title: {
+                  type: "string",
+                  example: "新文章",
+                  default: "无标题",
+                  description: "文章标题",
+                },
+                tag: {
+                  type: "string",
+                  example: "标签1",
+                  description: "标签",
+                },
+                editor: {
+                  type: "string",
+                  example: "markdown",
+                  default: "markdown",
+                  description: "编辑器类型",
+                },
+                privateCategorieid: {
+                  type: "string",
+                  example: "pcid0001",
+                  default: "default",
+                  description: "文集id，文章将被放在该文集中",
+                },
+              },
+            },
           },
         ],
         responses: {
@@ -187,43 +186,42 @@ export default {
         consumes,
         parameters: [
           {
-            name: "title",
             in: "body",
-            type: "string",
-            example: "新文章",
-            default: "无标题",
-            description: "文章标题",
-          },
-          {
-            name: "tag",
-            in: "body",
-            type: "string",
-            example: "标签1",
-            description: "标签",
-          },
-          {
-            name: "editor",
-            in: "body",
-            type: "string",
-            example: "markdown",
-            default: "markdown",
-            description: "编辑器类型",
-          },
-          {
-            name: "original",
-            in: "body",
-            type: "string",
-            example: "yes",
-            enum: ["yes", "no", null, "", "translate"],
-            description: "原创标识",
-          },
-          {
-            name: "privateCategorieid",
-            in: "body",
-            type: "string",
-            example: "pcid0001",
-            default: "default",
-            description: "文集id，文章将被放在该文集中",
+            name: "body",
+            schema: {
+              type: "object",
+              properties: {
+                title: {
+                  type: "string",
+                  example: "新文章",
+                  default: "无标题",
+                  description: "文章标题",
+                },
+                tag: {
+                  type: "string",
+                  example: "标签1",
+                  description: "标签",
+                },
+                editor: {
+                  type: "string",
+                  example: "markdown",
+                  default: "markdown",
+                  description: "编辑器类型",
+                },
+                privateCategorieid: {
+                  type: "string",
+                  example: "pcid0001",
+                  default: "default",
+                  description: "文集id，文章将被放在该文集中",
+                },
+                original: {
+                  type: "string",
+                  example: "yes",
+                  enum: ["yes", "no", null, "", "translate"],
+                  description: "原创标识",
+                },
+              },
+            },
           },
         ],
         responses: {
@@ -306,12 +304,19 @@ export default {
         consumes,
         parameters: [
           {
-            name: "privateCategorieid",
             in: "body",
-            type: "string",
-            example: "pcid0001",
-            default: "default",
-            description: "恢复后要把文章放在哪个文集中，默认不改变文章所在文集",
+            name: "body",
+            schema: {
+              type: "object",
+              properties: {
+                privateCategorieid: {
+                  type: "string",
+                  example: "pcid0001",
+                  default: "default",
+                  description: "恢复后要把文章放在哪个文集中，默认不改变文章所在文集",
+                },
+              },
+            },
           },
         ],
         responses: {
@@ -352,54 +357,51 @@ export default {
         consumes,
         parameters: [
           {
-            name: "version",
             in: "body",
-            type: "string",
-            example: "8",
-            required: true,
-            description: "新的版本号",
-          },
-          {
-            name: "title",
-            in: "body",
-            type: "string",
-            example: "新文章",
-            default: "无标题",
-            description: "文章标题",
-          },
-          {
-            name: "abstract",
-            in: "body",
-            type: "string",
-            example: "新文章",
-            default: "无标题",
-            description: "文章摘要",
-          },
-          {
-            name: "imgUrl",
-            in: "body",
-            type: "string",
-            example: "新文章",
-            default: "无标题",
-            description: "文章封面图片地址",
-          },
-          {
-            name: "savetype",
-            in: "body",
-            type: "string",
-            example: "autosave",
-            default: "autosave",
-            enum: saveTypes,
-            description: "保存方式",
-          },
+            name: "body",
+            schema: {
+              type: "object",
+              properties: {
+                version: {
+                  type: "string",
+                  example: "8",
+                  required: true,
+                  description: "新的版本号",
+                },
+                title: {
+                  type: "string",
+                  example: "新文章",
+                  default: "无标题",
+                  description: "文章标题",
+                },
+                abstract: {
+                  type: "string",
+                  example: "新文章",
+                  default: "无标题",
+                  description: "文章摘要",
+                },
+                imgUrl: {
+                  type: "string",
+                  example: "新文章",
+                  default: "无标题",
+                  description: "文章封面图片地址",
+                },
+                savetype: {
+                  type: "string",
+                  example: "autosave",
+                  default: "autosave",
+                  enum: saveTypes,
+                  description: "保存方式",
+                },
 
-          {
-            name: "content",
-            in: "body",
-            type: "string",
-            example: "# 标题\r\n\r\n从这里开始...",
-            default: "# 标题\r\n\r\n从这里开始...",
-            description: "文章内容",
+                content: {
+                  type: "string",
+                  example: "# 标题\r\n\r\n从这里开始...",
+                  default: "# 标题\r\n\r\n从这里开始...",
+                  description: "文章内容",
+                },
+              },
+            },
           },
         ],
         responses: {
@@ -440,20 +442,25 @@ export default {
         consumes,
         parameters: [
           {
-            name: "releasedversionName",
             in: "body",
-            type: "string",
-            example: "v1.0",
-            required: true,
-            description: "自定义的发布版本号",
-          },
-          {
-            name: "releaseInfo",
-            in: "body",
-            type: "string",
-            example: "发布正式版本",
-            required: true,
-            description: "发布说明",
+            name: "body",
+            schema: {
+              type: "object",
+              properties: {
+                releasedversionName: {
+                  type: "string",
+                  example: "v1.0",
+                  required: true,
+                  description: "自定义的发布版本号",
+                },
+                releaseInfo: {
+                  type: "string",
+                  example: "发布正式版本",
+                  required: true,
+                  description: "发布说明",
+                },
+              },
+            },
           },
         ],
         responses: {
@@ -529,12 +536,19 @@ export default {
         consumes,
         parameters: [
           {
-            name: "passwd",
             in: "body",
-            type: "string",
-            example: "abc123",
-            required: false,
-            description: "设置密码，如果不提供则使用随机字符串作为密码",
+            name: "body",
+            schema: {
+              type: "object",
+              properties: {
+                passwd: {
+                  type: "string",
+                  example: "abc123",
+                  required: false,
+                  description: "设置密码，如果不提供则使用随机字符串作为密码",
+                },
+              },
+            },
           },
         ],
         responses: {
