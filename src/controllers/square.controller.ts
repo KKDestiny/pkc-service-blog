@@ -22,7 +22,16 @@ const simpleFields = simpleFieldsArticle;
 async function index(req: Request, res: Response, next: NextFunction) {
   try {
     // 文章
-    const articles = await articleRepo.list({ criteria: { status: "released", ispublished: "yes" }, limit: 20, select: simpleFields });
+    const { limit: _limit, page: _page, login, isStar } = req.query;
+    let limit = 20;
+    let page = 0;
+    if (_limit) limit = Number(_limit);
+    if (_page) page = Number(_page);
+
+    const criteria = { status: "released", ispublished: "yes" };
+    if (login) Object.assign(criteria, { login });
+    if (isStar === "yes") Object.assign(criteria, { isStar: true });
+    const articles = await articleRepo.list({ criteria, limit, page, select: simpleFields });
 
     // 栏目
     const categories = await categoryRepo.list({ criteria: { status: { $ne: "deleted" } } });
