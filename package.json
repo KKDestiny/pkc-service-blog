@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npx rimraf dist && babel src --extensions \".js,.ts\" --out-dir dist --copy-files --no-copy-ignored",
     "clean": "npx rimraf dist build node_modules coverage logs yarn.lock",
-    "watch:server": "npx kill-port 3000 && npx nodemon --exec npx babel-node --extensions \".js,.ts\" src/server.ts --watch src",
+    "watch:server": "npx kill-port 6002 && npx nodemon --exec npx babel-node --extensions \".js,.ts\" src/server.ts --watch src",
     "serve": "npm run build && pm2 start ./ecosystem.config.js",
     "start": "npm-run-all --parallel watch:*",
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpileOnly --ignore-watch node_modules --no-notify src/server.ts",

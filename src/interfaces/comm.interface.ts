@@ -21,7 +21,7 @@ export interface repoOptions {
   /**
    * 筛选查询结果
    */
-  select?: string | Array<string>;
+  select?: string | Array<string> | Object;
 }
 
 export type IRequest = Request & { user: any };

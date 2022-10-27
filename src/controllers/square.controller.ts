@@ -96,7 +96,7 @@ async function getArticleContent(req: Request, res: Response, next: NextFunction
     const { isencrypted } = article;
     if (isencrypted) {
       // 加密文章不允许直接查看
-      return res.status(200).json({ data: null });
+      return res.status(200).json({ data: "内容已加密" });
     }
 
     // 获取文章内容
@@ -105,7 +105,7 @@ async function getArticleContent(req: Request, res: Response, next: NextFunction
     const ext = config.APP_ARTICLE_EXT;
     const fullPath = `${rootPath}/${articleFile}_v${version}${ext}`.replace(/\\/g, "/");
     if (!fs.existsSync(fullPath)) {
-      return res.status(400).json({ errors: { message: "content lost", fullPath } });
+      return res.status(200).json({ data: "暂无内容" });
     }
     const content = fs.readFileSync(fullPath, "utf8");
     return res.status(200).json({
