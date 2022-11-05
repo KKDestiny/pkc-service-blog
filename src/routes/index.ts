@@ -6,7 +6,7 @@
 import express from "express";
 
 import squareRoute from "./square.route";
-import editorRoute from "./editor.route";
+import editorRoute from "./editors";
 import auth from "../middlewares/auth.middleware";
 
 const router = express.Router({ mergeParams: true });
