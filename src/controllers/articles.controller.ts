@@ -290,6 +290,24 @@ async function getArticleContent(req: IRequest, res: Response, next: NextFunctio
 }
 
 /**
+ * 获取文章数据
+ */
+async function getArticleInfo(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    // 文章
+    const { name } = req.user;
+    const { articleId } = req.params;
+    const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, login: name } });
+
+    return res.status(200).json({
+      data: article,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * 发布文章
  */
 async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction) {
@@ -480,6 +498,7 @@ export default {
   deleteAnArticle,
   updateAnArticle,
   updateAnArticleContent,
+  getArticleInfo,
   getArticleContent,
 
   releaseAnArticle,
