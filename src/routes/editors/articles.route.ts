@@ -16,6 +16,7 @@ router.delete("/:articleId", controller.deleteAnArticle);
 router.post("/:articleId", controller.recoverAnArticle);
 
 router.put("/:articleId/content", controller.updateAnArticleContent);
+router.get("/:articleId/content", controller.getArticleContent);
 
 router.put("/:articleId/release", controller.releaseAnArticle);
 router.delete("/:articleId/release", controller.cancelReleaseAnArticle);

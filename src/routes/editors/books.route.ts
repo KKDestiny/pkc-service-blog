@@ -5,12 +5,10 @@
  */
 import express from "express";
 
+import controller from "../../controllers/books.controller";
+
 const router = express.Router({ mergeParams: true });
 
-const notDefined = (req, res) => {
-  res.status(400).json({ errors: "not ready" });
-};
-
-router.get("/", notDefined);
+router.get("/", controller.getBooks);
 
 export default router;

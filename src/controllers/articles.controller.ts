@@ -263,6 +263,33 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
 }
 
 /**
+ * 获取文章内容
+ */
+async function getArticleContent(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    // 文章
+    const { name } = req.user;
+    const { articleId } = req.params;
+    const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, login: name } });
+
+    // 获取文章内容
+    const rootPath = config.APP_ARTICLE_ROOT;
+    const { version, url: articleFile } = article;
+    const ext = config.APP_ARTICLE_EXT;
+    const fullPath = `${rootPath}/${articleFile}_v${version}${ext}`.replace(/\\/g, "/");
+    if (!fs.existsSync(fullPath)) {
+      return res.status(200).json({ data: "暂无内容" });
+    }
+    const content = fs.readFileSync(fullPath, "utf8");
+    return res.status(200).json({
+      data: content,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * 发布文章
  */
 async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction) {
@@ -453,6 +480,7 @@ export default {
   deleteAnArticle,
   updateAnArticle,
   updateAnArticleContent,
+  getArticleContent,
 
   releaseAnArticle,
   cancelReleaseAnArticle,
