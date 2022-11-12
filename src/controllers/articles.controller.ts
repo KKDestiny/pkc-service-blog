@@ -17,7 +17,7 @@ import { simpleFieldsArticle } from "./commons";
 import { generateSerial, getDeviceAgent, getDatetime, generateSimplePasswd } from "../utils/string.util";
 
 const simpleFields = simpleFieldsArticle;
-const pickSimpleFields = Object.keys(simpleFieldsArticle);
+const pickSimpleFields = ["_id", ...Object.keys(simpleFieldsArticle)];
 
 /**
  * 获取文章列表
