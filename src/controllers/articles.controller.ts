@@ -245,13 +245,13 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
 
     // 文章信息
     const updates = { version };
-    if (title !== article.title) {
+    if (title && title !== article.title) {
       Object.assign(updates, { title });
     }
-    if (abstract !== article.abstract) {
+    if (abstract && abstract !== article.abstract) {
       Object.assign(updates, { abstract });
     }
-    if (imgUrl !== article.img_url) {
+    if (imgUrl && imgUrl !== article.img_url) {
       Object.assign(updates, { img_url: imgUrl });
     }
     const result = await articleRepo.findByIdAndUpdate(criteria, { $set: updates, $addToSet: { history } });
