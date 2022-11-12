@@ -332,11 +332,11 @@ async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction
         errors: { message: "找不到文章" },
       });
     }
-    if (article.status === "released") {
-      return res.status(400).json({
-        errors: { message: "文章已发布，不可重复操作" },
-      });
-    }
+    // if (article.status === "released") {
+    //   return res.status(400).json({
+    //     errors: { message: "文章已发布，不可重复操作" },
+    //   });
+    // }
 
     const datetime = getDatetime();
     const updates = {
