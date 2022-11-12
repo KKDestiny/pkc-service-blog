@@ -17,6 +17,7 @@ import { simpleFieldsArticle } from "./commons";
 import { generateSerial, getDeviceAgent, getDatetime, generateSimplePasswd } from "../utils/string.util";
 
 const simpleFields = simpleFieldsArticle;
+const pickSimpleFields = Object.keys(simpleFieldsArticle);
 
 /**
  * 获取文章列表
@@ -131,7 +132,7 @@ async function deleteAnArticle(req: IRequest, res: Response, next: NextFunction)
       };
       const result = await articleRepo.findByIdAndUpdate(criteria, updates);
       return res.status(200).json({
-        data: pick(result, simpleFields),
+        data: pick(result, pickSimpleFields),
       });
     }
 
@@ -173,7 +174,7 @@ async function recoverAnArticle(req: IRequest, res: Response, next: NextFunction
     }
     const result = await articleRepo.findByIdAndUpdate(criteria, updates);
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
@@ -192,7 +193,7 @@ async function updateAnArticle(req: IRequest, res: Response, next: NextFunction)
 
     const result = await articleRepo.findByIdAndUpdate({ _id: articleId, login: name }, updates);
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
@@ -255,7 +256,7 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
     }
     const result = await articleRepo.findByIdAndUpdate(criteria, { $set: updates, $addToSet: { history } });
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
@@ -356,7 +357,7 @@ async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction
 
     const result = await articleRepo.findByIdAndUpdate(criteria, { $set: updates, $addToSet: { release_log: releaseLog } });
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
@@ -391,7 +392,7 @@ async function cancelReleaseAnArticle(req: IRequest, res: Response, next: NextFu
 
     const result = await articleRepo.findByIdAndUpdate(criteria, updates);
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
@@ -428,7 +429,7 @@ async function lockAnArticle(req: IRequest, res: Response, next: NextFunction) {
 
     const result = await articleRepo.findByIdAndUpdate(criteria, updates);
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
@@ -454,8 +455,9 @@ async function unlockAnArticle(req: IRequest, res: Response, next: NextFunction)
 
     const updates = { isencrypted: false };
     const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    console.log(pick(result, pickSimpleFields));
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
@@ -484,7 +486,7 @@ async function resetLockAnArticle(req: IRequest, res: Response, next: NextFuncti
 
     const result = await articleRepo.findByIdAndUpdate(criteria, updates);
     return res.status(200).json({
-      data: pick(result, simpleFields),
+      data: pick(result, pickSimpleFields),
     });
   } catch (error) {
     return next(error);
