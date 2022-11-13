@@ -14,7 +14,7 @@ import { ArticleType } from "../interfaces/article.interface";
 
 import articleRepo from "../repositories/articles.repository";
 import { simpleFieldsArticle } from "./commons";
-import { generateSerial, getDeviceAgent, getDatetime, generateSimplePasswd } from "../utils/string.util";
+import { generateSerial, getDeviceAgent, getDatetime1, generateSimplePasswd } from "../utils/string.util";
 
 const simpleFields = simpleFieldsArticle;
 const pickSimpleFields = ["_id", ...Object.keys(simpleFieldsArticle)];
@@ -65,7 +65,7 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
 
     const url = `${dirname}/${dirname}`;
     const article: ArticleType = {
-      date: getDatetime(),
+      date: getDatetime1(),
       title: title,
       author: req.user.name,
       author_url: headimg,
@@ -128,7 +128,7 @@ async function deleteAnArticle(req: IRequest, res: Response, next: NextFunction)
       // 仅移入回收站、不物理删除
       const updates = {
         status: "deleted",
-        date_delete: getDatetime(),
+        date_delete: getDatetime1(),
       };
       const result = await articleRepo.findByIdAndUpdate(criteria, updates);
       return res.status(200).json({
@@ -237,7 +237,7 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
     const devicetype = getDeviceAgent(req);
     const history = {
       _id: generateSerial(),
-      date: getDatetime(),
+      date: getDatetime1(),
       version,
       devicetype,
       savetype,
@@ -338,7 +338,7 @@ async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction
     //   });
     // }
 
-    const datetime = getDatetime();
+    const datetime = getDatetime1();
     const updates = {
       date_release: datetime,
       status: "released",

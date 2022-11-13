@@ -48,3 +48,6 @@ export function getDeviceAgent(req) {
 export function getDatetime() {
   return dayjs().format("YYYY-MM-DD HH:mm:ss");
 }
+export function getDatetime1() {
+  return dayjs().format("YYYY/MM/DD HH:mm:ss");
+}
