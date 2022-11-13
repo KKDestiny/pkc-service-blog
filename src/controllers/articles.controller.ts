@@ -429,7 +429,7 @@ async function lockAnArticle(req: IRequest, res: Response, next: NextFunction) {
 
     const result = await articleRepo.findByIdAndUpdate(criteria, updates);
     return res.status(200).json({
-      data: pick(result, pickSimpleFields),
+      data: [...pick(result, pickSimpleFields), passwd],
     });
   } catch (error) {
     return next(error);
