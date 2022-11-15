@@ -128,7 +128,44 @@ async function updateABook(req: IRequest, res: Response, next: NextFunction) {
       }
     );
     if (!result) {
-      return res.status(400).json({ errors: "create failed" });
+      return res.status(400).json({ errors: "update failed" });
+    }
+
+    return res.status(200).json({
+      data: result,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
+ * 移动一本书籍
+ */
+async function moveABook(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { name: login } = req.user;
+    const user: UserType = await userRepo.load({ criteria: { login } });
+    if (!user) {
+      return res.status(400).json({ errors: "找不到用户数据" });
+    }
+
+    const { bookId } = req.params;
+    if (!bookId) return res.status(400).json({ errors: "bookId is required" });
+
+    const { parent } = req.body;
+    if (!parent) return res.status(400).json({ errors: "parent is required" });
+
+    const result = await userRepo.updateOne(
+      { _id: user._id, collections: { $elemMatch: { id: bookId } } },
+      {
+        $set: {
+          "collections.$.parent": parent,
+        },
+      }
+    );
+    if (!result) {
+      return res.status(400).json({ errors: "move failed" });
     }
 
     return res.status(200).json({
@@ -144,4 +181,5 @@ export default {
   createABook,
   deleteABook,
   updateABook,
+  moveABook,
 };
