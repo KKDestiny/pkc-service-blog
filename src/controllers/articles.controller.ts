@@ -188,8 +188,14 @@ async function updateAnArticle(req: IRequest, res: Response, next: NextFunction)
   try {
     const { articleId } = req.params;
     const { name } = req.user;
-    const updates = pick(req.body, ["title", "tag", "editor", "original", "privateCategorieid"]);
-    updates.private_categorieid = req.body.privateCategorieid || "default";
+
+    const data = pick(req.body, ["title", "tag", "editor", "original", "privateCategorieid"]);
+    const updates = {};
+    if (data.title) Object.assign(updates, { title: data.title });
+    if (data.tag) Object.assign(updates, { tag: data.tag });
+    if (data.editor) Object.assign(updates, { editor: data.editor });
+    if (data.original) Object.assign(updates, { original: data.original });
+    if (data.privateCategorieid) Object.assign(updates, { private_categorieid: data.privateCategorieid || "default" });
 
     const result = await articleRepo.findOneAndUpdate({ _id: articleId, login: name }, updates);
     return res.status(200).json({
