@@ -130,7 +130,7 @@ async function deleteAnArticle(req: IRequest, res: Response, next: NextFunction)
         status: "deleted",
         date_delete: getDatetime1(),
       };
-      const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+      const result = await articleRepo.findOneAndUpdate(criteria, updates);
       return res.status(200).json({
         data: pick(result, pickSimpleFields),
       });
@@ -172,7 +172,7 @@ async function recoverAnArticle(req: IRequest, res: Response, next: NextFunction
     if (req.body.privateCategorieid) {
       Object.assign(updates, { private_categorieid: req.body.privateCategorieid });
     }
-    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    const result = await articleRepo.findOneAndUpdate(criteria, updates);
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
     });
@@ -191,7 +191,7 @@ async function updateAnArticle(req: IRequest, res: Response, next: NextFunction)
     const updates = pick(req.body, ["title", "tag", "editor", "original", "privateCategorieid"]);
     updates.private_categorieid = req.body.privateCategorieid || "default";
 
-    const result = await articleRepo.findByIdAndUpdate({ _id: articleId, login: name }, updates);
+    const result = await articleRepo.findOneAndUpdate({ _id: articleId, login: name }, updates);
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
     });
@@ -254,7 +254,7 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
     if (imgUrl && imgUrl !== article.img_url) {
       Object.assign(updates, { img_url: imgUrl });
     }
-    const result = await articleRepo.findByIdAndUpdate(criteria, { $set: updates, $addToSet: { history } });
+    const result = await articleRepo.findOneAndUpdate(criteria, { $set: updates, $addToSet: { history } });
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
     });
@@ -355,7 +355,7 @@ async function releaseAnArticle(req: IRequest, res: Response, next: NextFunction
       author: name,
     };
 
-    const result = await articleRepo.findByIdAndUpdate(criteria, { $set: updates, $addToSet: { release_log: releaseLog } });
+    const result = await articleRepo.findOneAndUpdate(criteria, { $set: updates, $addToSet: { release_log: releaseLog } });
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
     });
@@ -390,7 +390,7 @@ async function cancelReleaseAnArticle(req: IRequest, res: Response, next: NextFu
       status: "saved",
     };
 
-    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    const result = await articleRepo.findOneAndUpdate(criteria, updates);
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
     });
@@ -427,9 +427,9 @@ async function lockAnArticle(req: IRequest, res: Response, next: NextFunction) {
     const passwd = userPassword || generateSimplePasswd(8);
     const updates = { isencrypted: true, passwd };
 
-    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    const result = await articleRepo.findOneAndUpdate(criteria, updates);
     return res.status(200).json({
-      data: [...pick(result, pickSimpleFields), passwd],
+      data: { ...pick(result, pickSimpleFields), passwd },
     });
   } catch (error) {
     return next(error);
@@ -454,7 +454,7 @@ async function unlockAnArticle(req: IRequest, res: Response, next: NextFunction)
     }
 
     const updates = { isencrypted: false };
-    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    const result = await articleRepo.findOneAndUpdate(criteria, updates);
     console.log(pick(result, pickSimpleFields));
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
@@ -484,7 +484,7 @@ async function resetLockAnArticle(req: IRequest, res: Response, next: NextFuncti
     const passwd = generateSimplePasswd(8);
     const updates = { isencrypted: true, passwd };
 
-    const result = await articleRepo.findByIdAndUpdate(criteria, updates);
+    const result = await articleRepo.findOneAndUpdate(criteria, updates);
     return res.status(200).json({
       data: { ...pick(result, pickSimpleFields), passwd },
     });

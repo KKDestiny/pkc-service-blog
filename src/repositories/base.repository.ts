@@ -15,7 +15,7 @@ export class BaseRepository<T> {
 
   async updateById(_id: string, data: any): Promise<T> {
     return await this.model
-      .findByIdAndUpdate({ _id }, data, {
+      .findOneAndUpdate({ _id }, data, {
         new: true,
         runValidators: true,
       })
@@ -23,14 +23,22 @@ export class BaseRepository<T> {
       .exec();
   }
 
-  async findByIdAndUpdate(criteria, data: any): Promise<T> {
+  async findOneAndUpdate(criteria, data: any, runValidators?: boolean): Promise<T> {
     return await this.model
-      .findByIdAndUpdate(criteria, data, {
+      .findOneAndUpdate(criteria, data, {
         new: true,
-        runValidators: true,
+        runValidators,
       })
       .lean()
       .exec();
+  }
+
+  async update(criteria, data: any): Promise<T> {
+    return await this.model.update(criteria, data).lean().exec();
+  }
+
+  async updateOne(criteria, data: any): Promise<T> {
+    return await this.model.updateOne(criteria, data).lean().exec();
   }
 
   async count(criteria): Promise<T> {

@@ -15,6 +15,7 @@ export type CollectionType = {
 };
 
 export type UserType = {
+  _id?: string;
   name?: string;
   login?: string;
   collections?: Array<CollectionType>;
