@@ -278,14 +278,16 @@ async function getArticleContent(req: IRequest, res: Response, next: NextFunctio
   try {
     // 文章
     const { name } = req.user;
-    const { articleId } = req.params;
+    const { articleId, historyVersion } = req.params;
     const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, login: name } });
 
     // 获取文章内容
     const rootPath = config.APP_ARTICLE_ROOT;
     const { version, url: articleFile } = article;
     const ext = config.APP_ARTICLE_EXT;
-    const fullPath = `${rootPath}/${articleFile}_v${version}${ext}`.replace(/\\/g, "/");
+
+    const versionName = historyVersion || version;
+    const fullPath = `${rootPath}/${articleFile}_v${versionName}${ext}`.replace(/\\/g, "/");
     if (!fs.existsSync(fullPath)) {
       return res.status(200).json({ data: "暂无内容" });
     }
