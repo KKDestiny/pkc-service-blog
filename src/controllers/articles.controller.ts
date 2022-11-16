@@ -3,6 +3,7 @@
  * @LastEditors: linxiaozhou.com
  * @Description: Description
  */
+import crypto from "crypto";
 import { NextFunction, Response } from "express";
 import fs from "fs-extra";
 import { pick } from "lodash";
@@ -13,6 +14,7 @@ import { IRequest } from "../interfaces/comm.interface";
 import { ArticleType } from "../interfaces/article.interface";
 
 import articleRepo from "../repositories/articles.repository";
+import pictureRepo from "../repositories/pictures.repository";
 import { simpleFieldsArticle } from "./commons";
 import { generateSerial, getDeviceAgent, getDatetime1, generateSimplePasswd } from "../utils/string.util";
 
@@ -499,6 +501,76 @@ async function resetLockAnArticle(req: IRequest, res: Response, next: NextFuncti
   }
 }
 
+/**
+ * 上传图片
+ */
+async function uploadAPictureForArticle(req: IRequest & { fields?: object; files?: any }, res: Response, next: NextFunction) {
+  try {
+    const { articleId } = req.params;
+    const { name } = req.user;
+    const criteria = { _id: articleId, login: name };
+
+    // 查看文章内容
+    const article = await articleRepo.load({ criteria });
+    if (!article) {
+      return res.status(400).json({
+        errors: { message: "找不到文章" },
+      });
+    }
+
+    const body = pick(req.fields, ["blobmode"]);
+    if (!req.files.picture) return res.status(400).json({ errors: "找不到图片" });
+
+    const refArticle = {
+      date: getDatetime1(),
+      author: name,
+      title: article.title,
+    };
+
+    const pictureData = await fs.readFile(req.files.picture.filepath);
+    const sha1 = crypto.createHash("sha1").update(pictureData).digest("hex").toString();
+    const existPic = await pictureRepo.load({ criteria: { sha1 } });
+    if (existPic) {
+      // 已存在图片，将文章信息写入refLog
+      const result = await pictureRepo.findOneAndUpdate({ sha1 }, { $addToSet: { collections: refArticle } });
+      return res.status(200).json({
+        data: pick(result, pickSimpleFields),
+      });
+    } else {
+      // 新图片，写入存储空间并插入log
+      const rootpath = config.APP_RESOURCE_DIRPATH;
+      const filename = `${generateSerial()}.png`;
+      if (!fs.pathExistsSync(rootpath)) {
+        fs.mkdirsSync(rootpath);
+      }
+      const filepath = `${rootpath}/${filename}`;
+      const domain = config.APP_DOMAIN;
+      const rootRoute = config.APP_ROUTE;
+      const url = `${domain}${rootRoute}/${config.APP_RESOURCE_PATH}/${filename}`;
+      const writeRes = await fs.writeFile(filepath, pictureData);
+      const picture = {
+        name: filename,
+        sha1,
+        size: req.files.picture.size,
+        author: name,
+        status: "valid",
+        refLog: [refArticle],
+      };
+      const result = await pictureRepo.create(picture);
+      return res.status(200).json({
+        data: {
+          writeRes,
+          filename,
+          url,
+          sha1: result.sha1,
+        },
+      });
+    }
+  } catch (error) {
+    return next(error);
+  }
+}
+
 export default {
   listArticles,
   create,
@@ -515,4 +587,6 @@ export default {
   lockAnArticle,
   resetLockAnArticle,
   unlockAnArticle,
+
+  uploadAPictureForArticle,
 };

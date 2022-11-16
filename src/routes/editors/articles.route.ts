@@ -4,6 +4,8 @@
  * @Description: file content
  */
 import express from "express";
+import formidableMiddleware from "express-formidable";
+
 import controller from "../../controllers/articles.controller";
 
 const router = express.Router({ mergeParams: true });
@@ -25,5 +27,7 @@ router.delete("/:articleId/release", controller.cancelReleaseAnArticle);
 router.post("/:articleId/lock", controller.lockAnArticle);
 router.put("/:articleId/lock", controller.resetLockAnArticle);
 router.delete("/:articleId/lock", controller.unlockAnArticle);
+
+router.post("/:articleId/picture", formidableMiddleware(), controller.uploadAPictureForArticle);
 
 export default router;

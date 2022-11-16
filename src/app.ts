@@ -3,6 +3,7 @@
  * @LastEditors: linxiaozhou.com
  * @Description: file content
  */
+import path from "path";
 import express from "express";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
@@ -34,6 +35,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(methodOverride());
 app.use(helmet({ hsts: false, contentSecurityPolicy: false }));
+
+// Resources
+app.use(`${config.APP_RESOURCE_PATH}/`, express.static(path.join(__dirname, `../${config.APP_RESOURCE_DIRPATH}`)));
 
 if (config.NODE_ENV === "production") {
   expressWinston.requestWhitelist.push("body");

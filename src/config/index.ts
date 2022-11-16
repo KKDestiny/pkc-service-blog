@@ -19,6 +19,10 @@ const schema = Joi.object({
   APP_ROUTE: Joi.string().default("/"),
   APP_VERSION: Joi.string().default(`v${pkginfo.version || "1.0.0"}`),
 
+  APP_DOMAIN: Joi.string().default(`http://linxiaozhou.com`),
+  APP_RESOURCE_PATH: Joi.string().default(`/resources`),
+  APP_RESOURCE_DIRPATH: Joi.string().default(`./resources`),
+
   APP_ARTICLE_ROOT: Joi.string().default(`./private/articles`),
   APP_ARTICLE_EXT: Joi.string().default(`.atl`),
 
