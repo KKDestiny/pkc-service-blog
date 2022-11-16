@@ -278,7 +278,8 @@ async function getArticleContent(req: IRequest, res: Response, next: NextFunctio
   try {
     // 文章
     const { name } = req.user;
-    const { articleId, historyVersion } = req.params;
+    const { articleId } = req.params;
+    const { historyVersion } = req.query;
     const article: ArticleType = await articleRepo.load({ criteria: { _id: articleId, login: name } });
 
     // 获取文章内容
