@@ -548,7 +548,7 @@ async function uploadAPictureForArticle(req: IRequest & { fields?: object; files
       }
       const filepath = `${rootpath}/${filename}`;
       const domain = config.APP_DOMAIN;
-      const url = `${domain}/${config.APP_RESOURCE_PATH}/${filename}`;
+      const url = `${domain}${config.APP_RESOURCE_PATH}/${filename}`;
       const writeRes = await fs.writeFile(filepath, pictureData);
       const picture = {
         name: filename,
