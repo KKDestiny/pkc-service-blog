@@ -98,6 +98,7 @@ export type ArticleType = {
 
   likenum?: number;
   readnum?: number;
+  words?: number;
 
   isTemplate?: boolean;
 

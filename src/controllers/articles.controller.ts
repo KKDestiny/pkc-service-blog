@@ -16,7 +16,7 @@ import { ArticleType } from "../interfaces/article.interface";
 import articleRepo from "../repositories/articles.repository";
 import pictureRepo from "../repositories/pictures.repository";
 import { simpleFieldsArticle } from "./commons";
-import { generateSerial, getDeviceAgent, getDatetime1, generateSimplePasswd } from "../utils/string.util";
+import { generateSerial, getDeviceAgent, getDatetime1, generateSimplePasswd, countWords } from "../utils/string.util";
 
 const simpleFields = simpleFieldsArticle;
 const pickSimpleFields = ["_id", ...Object.keys(simpleFieldsArticle)];
@@ -252,7 +252,7 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
     };
 
     // 文章信息
-    const updates = { version };
+    const updates = { version, words: countWords(content) };
     if (title && title !== article.title) {
       Object.assign(updates, { title });
     }
@@ -548,8 +548,7 @@ async function uploadAPictureForArticle(req: IRequest & { fields?: object; files
       }
       const filepath = `${rootpath}/${filename}`;
       const domain = config.APP_DOMAIN;
-      const rootRoute = config.APP_ROUTE;
-      const url = `${domain}${rootRoute}/${config.APP_RESOURCE_PATH}/${filename}`;
+      const url = `${domain}/${config.APP_RESOURCE_PATH}/${filename}`;
       const writeRes = await fs.writeFile(filepath, pictureData);
       const picture = {
         name: filename,

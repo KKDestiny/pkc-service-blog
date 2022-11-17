@@ -55,6 +55,10 @@ export const schema = new Schema(
       type: String,
       description: "创建文章时置为“default”。向某一专题投稿。 最终写入 categorieid",
     },
+    words: {
+      type: Number,
+      description: "文章字数",
+    },
     publishtologs: {
       type: [
         {
