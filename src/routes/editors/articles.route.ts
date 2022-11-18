@@ -13,6 +13,8 @@ const router = express.Router({ mergeParams: true });
 router.get("/", controller.listArticles);
 router.post("/", controller.create);
 
+router.get("/recycle", controller.listArticlesInRecycle);
+
 router.put("/:articleId", controller.updateAnArticle);
 router.delete("/:articleId", controller.deleteAnArticle);
 router.post("/:articleId", controller.recoverAnArticle);
