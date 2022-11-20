@@ -13,6 +13,7 @@ const router = express.Router({ mergeParams: true });
 router.get("/", controller.listArticles);
 router.post("/", controller.create);
 
+router.get("/search", controller.searchArticles);
 router.get("/recycle", controller.listArticlesInRecycle);
 
 router.put("/:articleId", controller.updateAnArticle);

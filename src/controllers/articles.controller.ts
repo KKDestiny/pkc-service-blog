@@ -56,6 +56,44 @@ async function listArticles(req: IRequest, res: Response, next: NextFunction) {
 }
 
 /**
+ * 搜索文章
+ */
+async function searchArticles(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { keyword, privateCategorieid, limit: _limit, page: _page } = req.query;
+    const { name } = req.user;
+
+    let limit;
+    if (_limit && !isNaN(Number(_limit))) {
+      limit = Number(_limit);
+    }
+    let page = 0;
+    if (_limit && !isNaN(Number(page))) {
+      page = Number(_page);
+    }
+
+    const select = simpleFields;
+    const criteria = {
+      login: name,
+      status: { $ne: "deleted" },
+      $or: [{ title: { $regex: keyword, $options: "$i" } }, { abstract: { $regex: keyword, $options: "$i" } }],
+    };
+    if (privateCategorieid) {
+      Object.assign(criteria, { private_categorieid: privateCategorieid });
+    }
+
+    const result = await Promise.allSettled([articleRepo.list({ limit, page, criteria, select }), articleRepo.count(criteria)]);
+    const articles = result[0].status === "fulfilled" ? result[0].value : [];
+    const total = result[1].status === "fulfilled" ? result[1].value : 0;
+    return res.status(200).json({
+      data: { page, limit, total, list: articles },
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * 获取回收站里的文章列表
  */
 async function listArticlesInRecycle(req: IRequest, res: Response, next: NextFunction) {
@@ -610,6 +648,7 @@ async function uploadAPictureForArticle(req: IRequest & { fields?: object; files
 export default {
   listArticles,
   listArticlesInRecycle,
+  searchArticles,
 
   create,
   recoverAnArticle,
