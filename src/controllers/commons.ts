@@ -15,6 +15,9 @@ export const simpleFieldsArticle = {
   ispublished: 1,
   date_delete: 1,
 
+  createdAt: 1,
+  updatedAt: 1,
+
   history: { $slice: -1 }, // 取最后一个
   release_log: { $slice: -1 }, // 取最后一个
 };
