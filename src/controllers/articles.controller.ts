@@ -40,7 +40,7 @@ async function listArticles(req: IRequest, res: Response, next: NextFunction) {
 
     const select = simplify === "yes" ? simpleFields : undefined;
     const criteria = { login: name, status: { $ne: "deleted" } };
-    if (privateCategorieid) {
+    if (privateCategorieid && privateCategorieid !== "recently") {
       Object.assign(criteria, { private_categorieid: privateCategorieid });
     }
 
