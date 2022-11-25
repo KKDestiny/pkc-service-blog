@@ -136,6 +136,18 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
     const dirname = generateSerial();
     const headimg = "favicon.ico";
     const { name } = req.user;
+    const timestamp = getDatetime1();
+    const version = "1";
+
+    // history
+    const devicetype = getDeviceAgent(req);
+    const history = {
+      _id: generateSerial(),
+      date: timestamp,
+      version,
+      devicetype,
+      savetype: "manualsave",
+    };
 
     const url = `${dirname}/${dirname}`;
     const article: ArticleType = {
@@ -150,7 +162,7 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
       private_categorieid: privateCategorieid,
       editor,
 
-      version: "1",
+      version,
       releasedversion: "0",
       categorieid: "default",
       publishto: "default",
@@ -158,6 +170,7 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
       ispublished: "no",
       url, // 以 server.articleRoot 为根目录
       readnum: 0,
+      history: [history],
     };
 
     const _createContentFile = async () => {
@@ -203,12 +216,24 @@ async function duplicateAnArticle(req: IRequest, res: Response, next: NextFuncti
     }
     const content = fs.readFileSync(fullPath, "utf8");
 
+    const timestamp = getDatetime1();
+
+    // history
+    const devicetype = getDeviceAgent(req);
+    const history = {
+      _id: generateSerial(),
+      date: timestamp,
+      version,
+      devicetype,
+      savetype: "manualsave",
+    };
+
     // 新文章
     const dirname = generateSerial();
     const headimg = "favicon.ico";
     const url = `${dirname}/${dirname}`;
     const newArticle: ArticleType = {
-      date: getDatetime1(),
+      date: timestamp,
       title: title,
       author: req.user.name,
       author_url: headimg,
@@ -227,6 +252,7 @@ async function duplicateAnArticle(req: IRequest, res: Response, next: NextFuncti
       ispublished: "no",
       url, // 以 server.articleRoot 为根目录
       readnum: 0,
+      history: [history],
     };
 
     const _createContentFile = async content => {
