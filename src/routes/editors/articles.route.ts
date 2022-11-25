@@ -19,6 +19,7 @@ router.get("/recycle", controller.listArticlesInRecycle);
 router.put("/:articleId", controller.updateAnArticle);
 router.delete("/:articleId", controller.deleteAnArticle);
 router.post("/:articleId", controller.recoverAnArticle);
+router.post("/:articleId/duplicate", controller.duplicateAnArticle);
 
 router.get("/:articleId", controller.getArticleInfo);
 router.put("/:articleId/content", controller.updateAnArticleContent);

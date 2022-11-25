@@ -16,6 +16,10 @@ export const schema = new Schema(
       type: String,
       description: "文章摘要。写入前必须转为纯文字",
     },
+    originalArticleId: {
+      type: Schema.Types.ObjectId,
+      description: "原始文章id",
+    },
     author: {
       type: String,
       description: "文章作者",

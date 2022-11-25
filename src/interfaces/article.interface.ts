@@ -77,6 +77,7 @@ export type AttachmentType = {
 
 export type ArticleType = {
   date?: string;
+  originalArticleId?: string;
   title?: string;
   abstract?: string;
   author?: string;

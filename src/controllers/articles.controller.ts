@@ -181,6 +181,75 @@ async function create(req: IRequest, res: Response, next: NextFunction) {
 }
 
 /**
+ * 复制一篇文章
+ */
+async function duplicateAnArticle(req: IRequest, res: Response, next: NextFunction) {
+  try {
+    const { title = "无标题" } = req.body;
+
+    // 文章
+    const { name } = req.user;
+    const { articleId: originalArticleId } = req.params;
+    const article: ArticleType = await articleRepo.load({ criteria: { _id: originalArticleId, login: name } });
+
+    // 获取文章内容
+    const rootPath = config.APP_ARTICLE_ROOT;
+    const { version, url: articleFile } = article;
+    const ext = config.APP_ARTICLE_EXT;
+
+    const fullPath = `${rootPath}/${articleFile}_v${version}${ext}`.replace(/\\/g, "/");
+    if (!fs.existsSync(fullPath)) {
+      return res.status(200).json({ data: "暂无内容" });
+    }
+    const content = fs.readFileSync(fullPath, "utf8");
+
+    // 新文章
+    const dirname = generateSerial();
+    const headimg = "favicon.ico";
+    const url = `${dirname}/${dirname}`;
+    const newArticle: ArticleType = {
+      date: getDatetime1(),
+      title: title,
+      author: req.user.name,
+      author_url: headimg,
+      login: name,
+      tag: null,
+      status: "saved", // // 状态： released(发布) | saved(保存、未发布) | deleted(删除)
+      abstract: "无",
+      private_categorieid: article.private_categorieid,
+      editor: article.editor,
+
+      version: "1",
+      releasedversion: "0",
+      categorieid: "default",
+      publishto: "default",
+      settop: "no",
+      ispublished: "no",
+      url, // 以 server.articleRoot 为根目录
+      readnum: 0,
+    };
+
+    const _createContentFile = async content => {
+      const rootPath = config.APP_ARTICLE_ROOT;
+      const ext = config.APP_ARTICLE_EXT;
+      const dirPath = `${rootPath}/${dirname}`;
+      const fullPath = `${rootPath}/${url}_v${newArticle.version}${ext}`.replace(/\\/g, "/");
+
+      await fs.mkdirs(dirPath);
+      await fs.writeFile(fullPath, content, "utf8");
+    };
+
+    const result = await Promise.allSettled([articleRepo.create(newArticle), _createContentFile(content)]);
+    const articleRes = result[0].status === "fulfilled" ? result[0].value : null;
+    return res.status(200).json({
+      data: articleRes,
+    });
+  } catch (error) {
+    return next(error);
+  }
+}
+
+/**
  * 删除一篇文章
  */
 async function deleteAnArticle(req: IRequest, res: Response, next: NextFunction) {
@@ -651,6 +720,7 @@ export default {
   searchArticles,
 
   create,
+  duplicateAnArticle,
   recoverAnArticle,
   deleteAnArticle,
   updateAnArticle,
