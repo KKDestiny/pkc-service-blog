@@ -240,6 +240,11 @@ export const schema = new Schema(
       type: [String],
       description: "允许阅读此文章的用户组id列表",
     },
+
+    isBoardMode: {
+      type: Boolean,
+      description: "Markdown看板模式",
+    },
   },
   {
     timestamps: true,

@@ -128,4 +128,6 @@ export type ArticleType = {
   passwd?: string;
   allow_reader?: Array<MongoId>;
   allow_group?: Array<MongoId>;
+
+  isBoardMode?: boolean;
 };
