@@ -26,7 +26,7 @@ const pickSimpleFields = ["_id", ...Object.keys(simpleFieldsArticle)];
  */
 async function listArticles(req: IRequest, res: Response, next: NextFunction) {
   try {
-    const { simplify = "yes", privateCategorieid, limit: _limit, page: _page } = req.query;
+    const { simplify = "yes", privateCategorieid, favorite, tag, limit: _limit, page: _page } = req.query;
     const { name } = req.user;
 
     let limit;
@@ -42,6 +42,12 @@ async function listArticles(req: IRequest, res: Response, next: NextFunction) {
     const criteria = { login: name, status: { $ne: "deleted" } };
     if (privateCategorieid && privateCategorieid !== "recently") {
       Object.assign(criteria, { private_categorieid: privateCategorieid });
+    }
+    if (favorite !== undefined) {
+      Object.assign(criteria, { favorite });
+    }
+    if (tag !== undefined) {
+      Object.assign(criteria, { tag });
     }
 
     const result = await Promise.allSettled([articleRepo.list({ limit, page, criteria, select }), articleRepo.count(criteria)]);
@@ -358,7 +364,7 @@ async function updateAnArticle(req: IRequest, res: Response, next: NextFunction)
     const { articleId } = req.params;
     const { name } = req.user;
 
-    const data = pick(req.body, ["title", "tag", "editor", "original", "privateCategorieid", "isBoardMode"]);
+    const data = pick(req.body, ["title", "tag", "editor", "original", "privateCategorieid", "isBoardMode", "favorite"]);
     const updates = {};
     if (data.title) Object.assign(updates, { title: data.title });
     if (data.tag) Object.assign(updates, { tag: data.tag });
@@ -366,6 +372,7 @@ async function updateAnArticle(req: IRequest, res: Response, next: NextFunction)
     if (data.original) Object.assign(updates, { original: data.original });
     if (data.privateCategorieid) Object.assign(updates, { private_categorieid: data.privateCategorieid || "default" });
     if (data.isBoardMode !== undefined) Object.assign(updates, { isBoardMode: data.isBoardMode });
+    if (data.favorite !== undefined) Object.assign(updates, { favorite: data.favorite });
 
     const result = await articleRepo.findOneAndUpdate({ _id: articleId, login: name }, updates);
     return res.status(200).json({

@@ -81,12 +81,16 @@ export const schema = new Schema(
       description: "是否为原创。yes(或为空、null时)-原创, no-转载, translate-译文",
     },
     tag: {
-      type: String,
+      type: [String],
       description: `文章标签。与文集中的tags对应，格式为 "<id>_<name>"`,
     },
     settop: {
       type: String,
       description: `是否置顶。默认为 "no"，置顶为"yes"`,
+    },
+    favorite: {
+      type: Boolean,
+      description: `是否加入收藏夹`,
     },
 
     links: {

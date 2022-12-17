@@ -130,4 +130,5 @@ export type ArticleType = {
   allow_group?: Array<MongoId>;
 
   isBoardMode?: boolean;
+  favorite?: boolean;
 };
