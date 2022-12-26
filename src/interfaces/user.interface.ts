@@ -18,5 +18,6 @@ export type UserType = {
   _id?: string;
   name?: string;
   login?: string;
+  activities?: any;
   collections?: Array<CollectionType>;
 };

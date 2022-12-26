@@ -15,6 +15,10 @@ export const schema = new Schema(
       type: String,
       description: "登录名",
     },
+    activities: {
+      type: Schema.Types.Mixed,
+      description: "活动",
+    },
     collections: {
       type: [
         new Schema({

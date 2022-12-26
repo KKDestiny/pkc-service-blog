@@ -13,10 +13,11 @@ import config from "../config";
 import { IRequest } from "../interfaces/comm.interface";
 import { ArticleType } from "../interfaces/article.interface";
 
+import userRepo from "../repositories/user.repository";
 import articleRepo from "../repositories/articles.repository";
 import pictureRepo from "../repositories/pictures.repository";
 import { simpleFieldsArticle } from "./commons";
-import { generateSerial, getDeviceAgent, getDatetime1, generateSimplePasswd, countWords } from "../utils/string.util";
+import { generateSerial, getDeviceAgent, getDatetime1, getDate, generateSimplePasswd, countWords } from "../utils/string.util";
 
 const simpleFields = simpleFieldsArticle;
 const pickSimpleFields = ["_id", ...Object.keys(simpleFieldsArticle)];
@@ -389,7 +390,7 @@ async function updateAnArticle(req: IRequest, res: Response, next: NextFunction)
 async function updateAnArticleContent(req: IRequest, res: Response, next: NextFunction) {
   try {
     const { articleId } = req.params;
-    const { name } = req.user;
+    const { name, _id: userId } = req.user;
     const criteria = { _id: articleId, login: name };
 
     // 查看文章内容
@@ -438,6 +439,11 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
       Object.assign(updates, { img_url: imgUrl });
     }
     const result = await articleRepo.findOneAndUpdate(criteria, { $set: updates, $addToSet: { history } });
+
+    // 热力图
+    const date = getDate();
+    await userRepo.findOneAndUpdate({ _id: userId }, { $inc: { [`activities.${date}`]: 1 } });
+
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
     });
