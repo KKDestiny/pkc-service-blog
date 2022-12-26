@@ -390,8 +390,8 @@ async function updateAnArticle(req: IRequest, res: Response, next: NextFunction)
 async function updateAnArticleContent(req: IRequest, res: Response, next: NextFunction) {
   try {
     const { articleId } = req.params;
-    const { name, _id: userId } = req.user;
-    const criteria = { _id: articleId, login: name };
+    const { name: login } = req.user;
+    const criteria = { _id: articleId, login };
 
     // 查看文章内容
     const article = await articleRepo.load({ criteria });
@@ -442,7 +442,7 @@ async function updateAnArticleContent(req: IRequest, res: Response, next: NextFu
 
     // 热力图
     const date = getDate();
-    await userRepo.findOneAndUpdate({ _id: userId }, { $inc: { [`activities.${date}`]: 1 } });
+    await userRepo.findOneAndUpdate({ login }, { $inc: { [`activities.${date}`]: 1 } });
 
     return res.status(200).json({
       data: pick(result, pickSimpleFields),
